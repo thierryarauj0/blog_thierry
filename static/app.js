@@ -98,7 +98,25 @@ function addComment(postId) {
             document.getElementById('comment-' + postId).value = '';
             const commentsList = document.getElementById('comments-' + postId);
             const li = document.createElement('li');
-            li.appendChild(document.createTextNode(text));
+            li.id = `comment-${data.comment_id}`;
+            li.innerHTML = `${text} - Por: ${data.username}`;
+
+            if (data.is_admin) {
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Deletar';
+                deleteButton.onclick = function() {
+                    deleteComment(data.comment_id);
+                };
+                li.appendChild(deleteButton);
+
+                const editButton = document.createElement('button');
+                editButton.textContent = 'Editar';
+                editButton.onclick = function() {
+                    editComment(data.comment_id);
+                };
+                li.appendChild(editButton);
+            }
+            
             commentsList.appendChild(li);
         })
         .catch((error) => {
@@ -107,17 +125,18 @@ function addComment(postId) {
     }
 }
 
-function deleteComment(id) {
-    fetch(`/delete_comment/${id}`, {
+function deleteComment(commentId) {
+    fetch(`/delete_comment/${commentId}`, {
         method: 'DELETE'
     })
     .then(response => response.json())
     .then(data => {
         console.log(data.message);
-        const commentElement = document.getElementById(`comment-${id}`);
+        const commentElement = document.getElementById(`comment-${commentId}`);
         if (commentElement) {
             commentElement.remove();
         }
     })
     .catch(error => console.error('Error:', error));
 }
+
