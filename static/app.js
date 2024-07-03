@@ -81,3 +81,43 @@ function saveEdit(id) {
         .catch(error => console.error('Error:', error));
     }
 }
+
+function addComment(postId) {
+    const text = document.getElementById('comment-' + postId).value;
+    if (text) {
+        fetch('/add_comment/' + postId, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ text: text }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.message);
+            document.getElementById('comment-' + postId).value = '';
+            const commentsList = document.getElementById('comments-' + postId);
+            const li = document.createElement('li');
+            li.appendChild(document.createTextNode(text));
+            commentsList.appendChild(li);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+}
+
+function deleteComment(id) {
+    fetch(`/delete_comment/${id}`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data.message);
+        const commentElement = document.getElementById(`comment-${id}`);
+        if (commentElement) {
+            commentElement.remove();
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
