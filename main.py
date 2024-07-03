@@ -77,18 +77,26 @@ def add_post():
     return jsonify({"message": "Post added"}), 201
 
 # Rota para deletar um post
+
 @app.route('/delete_post/<int:id>', methods=['DELETE'])
 @login_required
 def delete_post(id):
     post = Post.query.get(id)
     if post:
-        if post.author != current_user and not current_user.admin:
+        if not current_user.admin:
             return jsonify({"message": "Unauthorized"}), 403
+        
+        # Exclui os comentários associados ao post
+        comments = Comment.query.filter_by(post_id=id).all()
+        for comment in comments:
+            db.session.delete(comment)
         
         db.session.delete(post)
         db.session.commit()
-        return jsonify({"message": "Post deleted"}), 200
+        return jsonify({"message": "Post and comments deleted"}), 200
     return jsonify({"message": "Post not found"}), 404
+
+
 
 # Rota para editar um post
 @app.route('/edit_post/<int:id>', methods=['PUT'])
@@ -115,6 +123,21 @@ def add_comment(post_id):
     db.session.add(new_comment)
     db.session.commit()
     return jsonify({"message": "Comment added"}), 201
+
+# Rota para deletar um comentário
+@app.route('/delete_comment/<int:id>', methods=['DELETE'])
+@login_required
+def delete_comment(id):
+    comment = Comment.query.get(id)
+    if comment:
+        if not current_user.admin:
+            return jsonify({"message": "Unauthorized"}), 403
+        
+        db.session.delete(comment)
+        db.session.commit()
+        return jsonify({"message": "Comment deleted"}), 200
+    return jsonify({"message": "Comment not found"}), 404
+
 
 # Rota de login
 @app.route('/login', methods=['GET', 'POST'])
