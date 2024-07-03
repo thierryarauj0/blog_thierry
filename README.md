@@ -24,7 +24,7 @@ Certifique-se de ter os seguintes requisitos instalados em seu sistema:
 
 ### 1. Clone o repositório para o seu ambiente local:
 
-   git clone https://github.com/seu-usuario/blog-do-thierry.git
+   git clone https://github.com/thierryarauj0/blog-do-thierry.git
 
  ### 2. Navegue ate o diretorio do projeto: 
 
