@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blog Do Thierry Para Testes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header id="main-header">
+        <div class="container">
+            <h1>Blog do Thierry</h1>
+            <h2>Hello World</h2>
+        </div>
+    </header>
+    <div class="container">
+        <div id="main">
+            <div id="posts">
+                {% for post in posts %}
+                <div class="post" id="post-{{ post.id }}">
+                    <h2 contenteditable="false">{{ post.title }}</h2>
+                    <p contenteditable="false">{{ post.content }}</p>
+                    <button onclick="enableEdit({{ post.id }})">Edit</button>
+                    <button onclick="saveEdit({{ post.id }})" style="display:none;">Save</button>
+                    <button onclick="deletePost({{ post.id }})">Delete</button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div id="post-form">
+            <h3>New Post</h3>
+            <input type="text" id="title" placeholder="Post Title">
+            <textarea id="content" placeholder="Post Content"></textarea>
+            <input type="submit" value="Add Post" onclick="addPost()">
+        </div>
+    </div>
+    <footer id="main-footer">
+        <div class="container">
+            <p>Siga-me nas redes sociais:</p>
+            <a href="https://www.facebook.com" target="_blank">Facebook</a> |
+            <a href="https://www.twitter.com" target="_blank">Twitter</a> |
+            <a href="https://www.instagram.com" target="_blank">Instagram</a> |
+            <a href="https://www.linkedin.com" target="_blank">LinkedIn</a>
+        </div>
+    </footer>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

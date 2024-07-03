@@ -1,0 +1,91 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+.container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+}
+#main-header {
+    background-color: #333;
+    color: #fff;
+    padding-top: 30px;
+    min-height: 70px;
+    border-bottom: #77d42a 3px solid;
+}
+#main-header h1 {
+    text-align: center;
+    text-transform: uppercase;
+    margin: 0;
+    font-size: 24px;
+}
+#main-header h2 {
+    text-align: center;
+    margin: 0;
+    font-size: 18px;
+    color: #77d42a;
+}
+#main {
+    margin-top: 20px;
+}
+.post {
+    background: #fff;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 10px;
+}
+.post h2 {
+    margin: 0;
+}
+.post p {
+    font-size: 14px;
+    line-height: 1.6;
+}
+#post-form {
+    margin-top: 20px;
+    background: #fff;
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+#post-form input, #post-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+}
+#post-form input[type="submit"] {
+    background: #333;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* Estilo para o footer */
+#main-footer {
+    background-color: #333;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    clear: both; /* Limpa o float */
+    width: 100%;
+    bottom: 0;
+    position: fixed;
+}
+
+#main-footer .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row; /* Lado a lado */
+}
+
+#main-footer a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+#main-footer a:hover {
+    text-decoration: underline;
+}
