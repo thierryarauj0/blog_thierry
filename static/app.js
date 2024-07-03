@@ -109,12 +109,6 @@ function addComment(postId) {
                 };
                 li.appendChild(deleteButton);
 
-                const editButton = document.createElement('button');
-                editButton.textContent = 'Editar';
-                editButton.onclick = function() {
-                    editComment(data.comment_id);
-                };
-                li.appendChild(editButton);
             }
             
             commentsList.appendChild(li);
