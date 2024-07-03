@@ -190,5 +190,13 @@ def logout():
     flash('Você saiu da sua conta.', 'info')
     return redirect(url_for('login'))
 
+@app.after_request
+def add_header(response):
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Content-Security-Policy"] = "script-src 'unsafe-inline';"
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Credentials"] = "true"
+    return response
+
 if __name__ == '__main__':
     app.run(debug=True)
