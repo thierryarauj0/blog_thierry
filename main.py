@@ -2,6 +2,7 @@ from flask import Flask, request, render_template, jsonify, redirect, url_for, f
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
@@ -18,6 +19,9 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(50), unique=True, nullable=False)
     password_hash = db.Column(db.String(100), nullable=False)
     admin = db.Column(db.Boolean, default=False)
+    post_id = db.relationship('Post', backref='author', lazy=True)
+    comment_id = db.relationship('Comment', backref='user', lazy=True)
+    
     
 
     def set_password(self, password):
@@ -25,13 +29,22 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+    
+    
 
 # Modelo de post para o banco de dados
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     content = db.Column(db.Text, nullable=False)
-  
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.Text, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
 
 # Crie o banco de dados e as tabelas dentro do contexto do aplicativo
 with app.app_context():
@@ -42,13 +55,14 @@ with app.app_context():
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# Rota principal - lista de posts
+# Rota principal - lista de posts e comentários
 @app.route('/')
 def index():
     if current_user.is_authenticated:
         nome = request.args.get("nome")
         posts = Post.query.all()
-        return render_template("index.html", nome=nome, posts=posts)
+        comments = Comment.query.all()
+        return render_template("index.html", nome=nome, posts=posts, comments=comments)
     else:
         return redirect(url_for('login'))
 
@@ -91,6 +105,16 @@ def edit_post(id):
         db.session.commit()
         return jsonify({"message": "Post updated"}), 200
     return jsonify({"message": "Post not found"}), 404
+
+# Rota para adicionar um comentário a um post
+@app.route('/add_comment/<int:post_id>', methods=['POST'])
+@login_required
+def add_comment(post_id):
+    data = request.get_json()
+    new_comment = Comment(text=data['text'], user_id=current_user.id, post_id=post_id)
+    db.session.add(new_comment)
+    db.session.commit()
+    return jsonify({"message": "Comment added"}), 201
 
 # Rota de login
 @app.route('/login', methods=['GET', 'POST'])
