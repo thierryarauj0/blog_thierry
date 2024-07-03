@@ -19,18 +19,21 @@
                 <div class="post" id="post-{{ post.id }}">
                     <h2 contenteditable="false">{{ post.title }}</h2>
                     <p contenteditable="false">{{ post.content }}</p>
+                    {% if current_user.is_authenticated and current_user.admin %}
                     <button onclick="enableEdit({{ post.id }})">Edit</button>
-                    <button onclick="saveEdit({{ post.id }})" style="display:none;">Save</button>
                     <button onclick="deletePost({{ post.id }})">Delete</button>
+                    {% endif %}
                 </div>
                 {% endfor %}
             </div>
-        </div>
-        <div id="post-form">
-            <h3>New Post</h3>
-            <input type="text" id="title" placeholder="Post Title">
-            <textarea id="content" placeholder="Post Content"></textarea>
-            <input type="submit" value="Add Post" onclick="addPost()">
+            {% if current_user.is_authenticated and current_user.admin %}
+            <div id="post-form">
+                <h3>New Post</h3>
+                <input type="text" id="title" placeholder="Post Title">
+                <textarea id="content" placeholder="Post Content"></textarea>
+                <input type="submit" value="Add Post" onclick="addPost()">
+            </div>
+            {% endif %}
         </div>
     </div>
     <footer id="main-footer">
