@@ -122,7 +122,12 @@ def add_comment(post_id):
     new_comment = Comment(text=data['text'], user_id=current_user.id, post_id=post_id)
     db.session.add(new_comment)
     db.session.commit()
-    return jsonify({"message": "Comment added"}), 201
+    return jsonify({
+        "message": "Comment added",
+        "comment_id": new_comment.id,
+        "username": current_user.username,
+        "is_admin": current_user.admin
+    }), 201
 
 # Rota para deletar um comentário
 @app.route('/delete_comment/<int:id>', methods=['DELETE'])
