@@ -1,4 +1,4 @@
-# Blog do Thierry
+# Blog do Thierry (falta algumas coisas hehe (tela de login e privilegios.))
 
 Este é um projeto de blog simples desenvolvido utilizando Flask e SQLite. Permite aos usuários criar, visualizar, editar e excluir posts no blog.
 
