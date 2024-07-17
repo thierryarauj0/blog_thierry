@@ -76,16 +76,29 @@ def add_post():
     db.session.commit()
     return jsonify({"message": "Post added"}), 201
 
-# Rota para deletar um post
+@app.route('/edit_post/<int:id>', methods=['PUT'])
+@login_required
+def edit_post(id):
+    data = request.get_json()
+    post = Post.query.get(id)
+    if post:
+        if post.author.id != current_user.id and not current_user.admin:
+            return jsonify({"message": "Unauthorized"}), 403
+        
+        post.title = data['title']
+        post.content = data['content']
+        db.session.commit()
+        return jsonify({"message": "Post updated"}), 200
+    return jsonify({"message": "Post not found"}), 404
 
 @app.route('/delete_post/<int:id>', methods=['DELETE'])
 @login_required
 def delete_post(id):
     post = Post.query.get(id)
     if post:
-        if not current_user.admin:
+        if post.author.id != current_user.id and not current_user.admin:
             return jsonify({"message": "Unauthorized"}), 403
-        
+
         # Exclui os comentários associados ao post
         comments = Comment.query.filter_by(post_id=id).all()
         for comment in comments:
@@ -96,23 +109,6 @@ def delete_post(id):
         return jsonify({"message": "Post and comments deleted"}), 200
     return jsonify({"message": "Post not found"}), 404
 
-
-
-# Rota para editar um post
-@app.route('/edit_post/<int:id>', methods=['PUT'])
-@login_required
-def edit_post(id):
-    data = request.get_json()
-    post = Post.query.get(id)
-    if post:
-        if post.author != current_user and not current_user.admin:
-            return jsonify({"message": "Unauthorized"}), 403
-        
-        post.title = data['title']
-        post.content = data['content']
-        db.session.commit()
-        return jsonify({"message": "Post updated"}), 200
-    return jsonify({"message": "Post not found"}), 404
 
 # Rota para adicionar um comentário a um post
 @app.route('/add_comment/<int:post_id>', methods=['POST'])
@@ -144,7 +140,6 @@ def delete_comment(id):
     return jsonify({"message": "Comment not found"}), 404
 
 
-# Rota de login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -161,6 +156,7 @@ def login():
             flash('Nome de usuário ou senha incorretos.', 'danger')
 
     return render_template('login.html')
+
 
 # Rota de registro de usuário
 @app.route('/signup', methods=['GET', 'POST'])
@@ -182,6 +178,7 @@ def signup():
 
     return render_template('signup.html')
 
+
 # Rota de logout
 @app.route('/logout')
 @login_required
@@ -199,4 +196,4 @@ def add_header(response):
     return response
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='127.0.0.1', port=5000, debug=True)
