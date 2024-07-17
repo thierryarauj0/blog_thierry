@@ -15,6 +15,7 @@
                 <a href="{{ url_for('logout') }}" class="btn">Logout</a>
                 {% else %}
                 <a href="{{ url_for('login') }}" class="btn">Login</a>
+                <a href="{{ url_for('signup') }}" class="btn">Cadastro</a>
                 {% endif %}
             </div>
         </div>
@@ -36,7 +37,6 @@
                             {{ comment.text }} - Por: {{ comment.user.username }}
                             {% if current_user.is_authenticated and current_user.admin %}
                             <button onclick="deleteComment({{ comment.id }})">Deletar</button>
-                        
                             {% endif %}
                         </li>
                         {% endif %}
@@ -47,6 +47,8 @@
                         <textarea id="comment-{{ post.id }}" placeholder="Seu comentário"></textarea>
                         <button onclick="addComment({{ post.id }})">Enviar Comentário</button>
                     </div>
+                    {% else %}
+                    <p><a href="{{ url_for('login') }}">Faça login</a> para comentar.</p>
                     {% endif %}
                     {% if current_user.is_authenticated and current_user.admin %}
                     <div class="admin-actions">
