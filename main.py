@@ -58,13 +58,10 @@ def load_user(user_id):
 # Rota principal - lista de posts e comentários
 @app.route('/')
 def index():
-    if current_user.is_authenticated:
-        nome = request.args.get("nome")
-        posts = Post.query.all()
-        comments = Comment.query.all()
-        return render_template("index.html", nome=nome, posts=posts, comments=comments)
-    else:
-        return redirect(url_for('login'))
+    posts = Post.query.all()
+    comments = Comment.query.all()
+    return render_template("index.html", posts=posts, comments=comments)
+
 
 # Rota para adicionar um novo post
 @app.route('/add_post', methods=['POST'])
