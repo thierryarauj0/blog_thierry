@@ -19,18 +19,14 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(50), unique=True, nullable=False)
     password_hash = db.Column(db.String(100), nullable=False)
     admin = db.Column(db.Boolean, default=False)
-    post_id = db.relationship('Post', backref='author', lazy=True)
-    comment_id = db.relationship('Comment', backref='user', lazy=True)
-    
-    
+    posts = db.relationship('Post', backref='author', lazy=True)
+    comments = db.relationship('Comment', backref='user', lazy=True)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
-    
-    
 
 # Modelo de post para o banco de dados
 class Post(db.Model):
@@ -38,7 +34,9 @@ class Post(db.Model):
     title = db.Column(db.String(100), nullable=False)
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    comments = db.relationship('Comment', backref='post', lazy=True)
 
+# Modelo de comentário para o banco de dados
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text, nullable=False)
@@ -49,6 +47,7 @@ class Comment(db.Model):
 # Crie o banco de dados e as tabelas dentro do contexto do aplicativo
 with app.app_context():
     db.create_all()
+
 
 # Carregar usuário pelo ID para o Flask-Login
 @login_manager.user_loader
